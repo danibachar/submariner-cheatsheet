@@ -1,0 +1,17 @@
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: multi-cluster-prometheus
+  namespace: monitoring
+spec:
+  interval: 10s # TODO change to 60s
+  module: http_2xx
+  prober:
+    url: blackbox-exporter.monitoring.svc.cluster1.local:19115 # note the cluster id !
+  targets:
+    staticConfig:
+      static:
+      # Submariner prometheus svc scheme - for subctl exported serices only!
+      # - cluster{id}.prometheus-k8s.monitoring.svc.clusterset.local
+      # - http://100.1.154.182/metrics // borker no need to scrapse myself
+      - http://cluster2.prometheus-k8s.monitoring.svc.clusterset.local:9090/metrics

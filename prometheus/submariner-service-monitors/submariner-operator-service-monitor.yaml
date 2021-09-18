@@ -1,0 +1,15 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: submariner-operator-metrics
+  namespace: submariner-operator
+  labels:
+    name: submariner-operator
+spec:
+  selector:
+    matchLabels:
+      name: submariner-operator
+  targetLabels:
+    - name
+  endpoints:
+  - port: http-metrics

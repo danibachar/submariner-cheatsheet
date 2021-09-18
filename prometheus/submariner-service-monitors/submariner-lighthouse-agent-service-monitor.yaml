@@ -1,0 +1,15 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: submariner-lighthouse-agent-metrics
+  namespace: submariner-operator
+  labels:
+    app: submariner-lighthouse-agent
+spec:
+  selector:
+    matchLabels:
+      app: submariner-lighthouse-agent
+  targetLabels:
+    - name
+  endpoints:
+  - port: metrics

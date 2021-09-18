@@ -1,0 +1,15 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: submariner-gateway-metrics
+  namespace: submariner-operator
+  labels:
+    app: submariner-gateway
+spec:
+  selector:
+    matchLabels:
+      app: submariner-gateway
+  targetLabels:
+    - name
+  endpoints:
+  - port: metrics
