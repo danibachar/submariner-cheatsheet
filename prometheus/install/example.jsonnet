@@ -1,5 +1,6 @@
 local kp =
   (import 'kube-prometheus/main.libsonnet') +
+  import 'kube-prometheus/addons/all-namespaces.libsonnet') +
   // Uncomment the following imports to enable its patches
   // (import 'kube-prometheus/addons/anti-affinity.libsonnet') +
   // (import 'kube-prometheus/addons/managed-cluster.libsonnet') +
@@ -12,7 +13,7 @@ local kp =
       common+: {
         namespace: 'monitoring',
       },
-      prometheus+:: {
+      prometheus+: {
         namespaces: [],
       },
     },
@@ -24,6 +25,8 @@ local kp =
   for name in std.filter((function(name) name != 'serviceMonitor' && name != 'prometheusRule'), std.objectFields(kp.prometheusOperator))
 } +
 // serviceMonitor and prometheusRule are separated so that they can be created after the CRDs are ready
+{ ['00namespace-' + name]: kp.kubePrometheus[name] for name in std.objectFields(kp.kubePrometheus) } +
+{ ['0prometheus-operator-' + name]: kp.prometheusOperator[name] for name in std.objectFields(kp.prometheusOperator) } +
 { 'prometheus-operator-serviceMonitor': kp.prometheusOperator.serviceMonitor } +
 { 'prometheus-operator-prometheusRule': kp.prometheusOperator.prometheusRule } +
 { 'kube-prometheus-prometheusRule': kp.kubePrometheus.prometheusRule } +

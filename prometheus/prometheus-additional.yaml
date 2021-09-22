@@ -1,0 +1,7 @@
+- job_name: "prometheus-federate"
+  honor_labels: true
+  metrics_path: '/federate'
+  params:
+    match[]: ['{job=~".+"}']
+  static_configs:
+  - targets: ["cluster2.prometheus-k8s.monitoring.svc.clusterset.local"]
