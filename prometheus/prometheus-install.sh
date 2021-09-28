@@ -4,7 +4,7 @@
 $KUBE_PROMETHEUS_RELEASE=0.8
 $CLUSETRS_CONFIG_FILES="",""
 
-mkdir my-kube-prometheus; cd my-kube-prometheus
+cd install
 jb init  # Creates the initial/empty `jsonnetfile.json`
 # Install the kube-prometheus dependency
 jb install github.com/prometheus-operator/kube-prometheus/jsonnet/kube-prometheus@release-0.8 # Creates `vendor/` & `jsonnetfile.lock.json`, and fills in `jsonnetfile.json`
@@ -17,8 +17,9 @@ jb install github.com/prometheus-operator/kube-prometheus/jsonnet/kube-prometheu
 
 jb update
 sudo chmod +x install/build.sh
-install/build.sh example.jsonnet
+./build.sh example.jsonnet
 # TODO - run for each cluster
+cd ../..
 kubectl --kubeconfig submariner/output/kubeconfigs/kind-config-cluster1 apply -f install/manifests/setup
 kubectl --kubeconfig submariner/output/kubeconfigs/kind-config-cluster2 apply -f install/manifests/setup
 sleep 5
@@ -27,8 +28,3 @@ kubectl --kubeconfig submariner/output/kubeconfigs/kind-config-cluster2 apply -f
 sleep 5
 kubectl --kubeconfig submariner/output/kubeconfigs/kind-config-cluster1 apply -f submariner-service-monitors/
 kubectl --kubeconfig submariner/output/kubeconfigs/kind-config-cluster2 apply -f submariner-service-monitors/
-
-# Exporting main prometheus service to be available multi-cluster wise
-# This way we can configure the Prometheus on the Broker cluster (actually any cluster) to sccrape its metrics, using a Probe
-subctl export service --kubeconfig submariner/output/kubeconfigs/kind-config-cluster1 --namespace monitoring prometheus-k8s
-subctl export service --kubeconfig submariner/output/kubeconfigs/kind-config-cluster2 --namespace monitoring prometheus-k8s
